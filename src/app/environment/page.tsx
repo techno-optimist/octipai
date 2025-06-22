@@ -28,6 +28,7 @@ export default function EnvironmentalCameraPage() {
   const [stream, setStream] = useState<MediaStream | null>(null)
   const [isCameraActive, setIsCameraActive] = useState(false)
   const [cameraError, setCameraError] = useState<string | null>(null)
+  const [isVideoReady, setIsVideoReady] = useState(false)
   const videoRef = useRef<HTMLVideoElement>(null)
   const canvasRef = useRef<HTMLCanvasElement>(null)
   
@@ -40,38 +41,114 @@ export default function EnvironmentalCameraPage() {
   const [showOverlays, setShowOverlays] = useState(false)
   const [scanPosition, setScanPosition] = useState({ x: 50, y: 50 }) // percentage position
 
-  // Initialize camera
+  // Initialize camera with fallback options
   const startCamera = useCallback(async () => {
     try {
       setCameraError(null)
+      setIsVideoReady(false)
       
-      const mediaStream = await navigator.mediaDevices.getUserMedia({
-        video: { 
-          facingMode: 'environment', // Use back camera if available
-          width: { ideal: 1280 },
-          height: { ideal: 720 }
+      // Try different camera configurations with fallbacks
+      const constraints = [
+        // First try: back camera with ideal resolution
+        {
+          video: { 
+            facingMode: { ideal: 'environment' },
+            width: { ideal: 1280 },
+            height: { ideal: 720 }
+          },
+          audio: false
         },
-        audio: false
-      })
+        // Second try: any camera with lower resolution
+        {
+          video: { 
+            width: { ideal: 640 },
+            height: { ideal: 480 }
+          },
+          audio: false
+        },
+        // Third try: basic video only
+        {
+          video: true,
+          audio: false
+        }
+      ]
+      
+      let mediaStream = null
+      let lastError = null
+      
+      for (const constraint of constraints) {
+        try {
+          console.log('Trying camera constraint:', constraint)
+          mediaStream = await navigator.mediaDevices.getUserMedia(constraint)
+          break
+        } catch (err) {
+          console.warn('Camera constraint failed:', constraint, err)
+          lastError = err
+        }
+      }
+      
+      if (!mediaStream) {
+        throw lastError || new Error('No camera configuration worked')
+      }
       
       setStream(mediaStream)
       setIsCameraActive(true)
       
+      // Set up video element with proper event handling
       if (videoRef.current) {
-        videoRef.current.srcObject = mediaStream
+        const video = videoRef.current
+        
+        // Add event listeners for video readiness
+        const onLoadedMetadata = () => {
+          console.log('Video metadata loaded:', {
+            videoWidth: video.videoWidth,
+            videoHeight: video.videoHeight,
+            readyState: video.readyState
+          })
+          setIsVideoReady(true)
+        }
+        
+        const onCanPlay = () => {
+          console.log('Video can play')
+          setIsVideoReady(true)
+        }
+        
+        const onError = (e: Event) => {
+          console.error('Video error:', e)
+          setCameraError('Video playback error')
+        }
+        
+        video.addEventListener('loadedmetadata', onLoadedMetadata)
+        video.addEventListener('canplay', onCanPlay)
+        video.addEventListener('error', onError)
+        
+        // Set the stream
+        video.srcObject = mediaStream
+        
+        // Cleanup function for event listeners
+        return () => {
+          video.removeEventListener('loadedmetadata', onLoadedMetadata)
+          video.removeEventListener('canplay', onCanPlay)
+          video.removeEventListener('error', onError)
+        }
       }
     } catch (err) {
       console.error('Camera access error:', err)
-      setCameraError('Camera access denied. Please enable camera permissions and try again.')
+      const errorMessage = err instanceof Error ? err.message : 'Unknown camera error'
+      setCameraError(`Camera access failed: ${errorMessage}. Please check camera permissions and try again.`)
     }
   }, [])
 
   // Stop camera
   const stopCamera = useCallback(() => {
     if (stream) {
-      stream.getTracks().forEach(track => track.stop())
+      stream.getTracks().forEach(track => {
+        console.log('Stopping track:', track.kind, track.label)
+        track.stop()
+      })
       setStream(null)
       setIsCameraActive(false)
+      setIsVideoReady(false)
     }
   }, [stream])
 
@@ -84,30 +161,53 @@ export default function EnvironmentalCameraPage() {
     }
   }, [stream])
 
-  // Capture frame from video
+  // Capture frame from video with better error handling
   const captureFrame = useCallback((): string | null => {
-    if (!videoRef.current || !canvasRef.current) return null
+    if (!videoRef.current || !canvasRef.current || !isVideoReady) {
+      console.warn('Cannot capture frame: video not ready')
+      return null
+    }
     
     const video = videoRef.current
     const canvas = canvasRef.current
     const ctx = canvas.getContext('2d')
     
-    if (!ctx) return null
+    if (!ctx) {
+      console.error('Cannot get canvas context')
+      return null
+    }
     
-    // Set canvas size to match video
-    canvas.width = video.videoWidth
-    canvas.height = video.videoHeight
+    // Check if video has valid dimensions
+    if (video.videoWidth === 0 || video.videoHeight === 0) {
+      console.warn('Video has no dimensions:', video.videoWidth, video.videoHeight)
+      return null
+    }
     
-    // Draw current video frame to canvas
-    ctx.drawImage(video, 0, 0)
-    
-    // Convert to base64
-    return canvas.toDataURL('image/jpeg', 0.8)
-  }, [])
+    try {
+      // Set canvas size to match video
+      canvas.width = video.videoWidth
+      canvas.height = video.videoHeight
+      
+      // Clear canvas and draw current video frame
+      ctx.clearRect(0, 0, canvas.width, canvas.height)
+      ctx.drawImage(video, 0, 0)
+      
+      // Convert to base64
+      const dataUrl = canvas.toDataURL('image/jpeg', 0.8)
+      console.log('Frame captured successfully:', canvas.width, 'x', canvas.height)
+      return dataUrl
+    } catch (err) {
+      console.error('Error capturing frame:', err)
+      return null
+    }
+  }, [isVideoReady])
 
   // Scan current camera view
   const scanEnvironment = useCallback(async () => {
-    if (!isCameraActive) return
+    if (!isCameraActive || !isVideoReady) {
+      setError('Camera not ready for scanning')
+      return
+    }
     
     setIsScanning(true)
     setError(null)
@@ -117,7 +217,7 @@ export default function EnvironmentalCameraPage() {
       // Capture current frame
       const frameData = captureFrame()
       if (!frameData) {
-        throw new Error('Failed to capture camera frame')
+        throw new Error('Failed to capture camera frame - video not ready')
       }
       
       // Convert base64 to blob for API
@@ -149,11 +249,14 @@ export default function EnvironmentalCameraPage() {
     } finally {
       setIsScanning(false)
     }
-  }, [isCameraActive, captureFrame])
+  }, [isCameraActive, isVideoReady, captureFrame])
 
   // Handle scan position click
   const handleVideoClick = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
-    if (!isCameraActive) return
+    if (!isCameraActive || !isVideoReady) {
+      setError('Camera not ready - please wait for video to load')
+      return
+    }
     
     const rect = e.currentTarget.getBoundingClientRect()
     const x = ((e.clientX - rect.left) / rect.width) * 100
@@ -161,7 +264,7 @@ export default function EnvironmentalCameraPage() {
     
     setScanPosition({ x, y })
     scanEnvironment()
-  }, [isCameraActive, scanEnvironment])
+  }, [isCameraActive, isVideoReady, scanEnvironment])
 
   return (
     <div className="min-h-screen relative overflow-hidden">
@@ -227,7 +330,21 @@ export default function EnvironmentalCameraPage() {
                       playsInline
                       muted
                       className="w-full h-full object-cover"
+                      style={{ 
+                        background: '#000',
+                        minHeight: '300px' 
+                      }}
                     />
+                    
+                    {/* Video loading indicator */}
+                    {!isVideoReady && (
+                      <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
+                        <div className="text-white text-center">
+                          <Loader className="w-8 h-8 animate-spin mx-auto mb-2" />
+                          <p>Loading camera feed...</p>
+                        </div>
+                      </div>
+                    )}
                     
                     {/* Scan Target Overlay */}
                     <div className="absolute inset-0 pointer-events-none">
@@ -337,7 +454,12 @@ export default function EnvironmentalCameraPage() {
                     </div>
                     
                     <div className="text-purple-200 text-sm">
-                      {isScanning ? (
+                      {!isVideoReady ? (
+                        <div className="flex items-center gap-2">
+                          <Loader className="w-4 h-4 animate-spin" />
+                          Loading camera...
+                        </div>
+                      ) : isScanning ? (
                         <div className="flex items-center gap-2">
                           <Loader className="w-4 h-4 animate-spin" />
                           Scanning meaning fields...

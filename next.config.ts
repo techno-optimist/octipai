@@ -9,6 +9,7 @@ const nextConfig: NextConfig = {
     // Ignore ESLint errors during build
     ignoreDuringBuilds: true,
   },
+  devIndicators: false, // Disable the development tools UI completely
 };
 
 export default nextConfig;
