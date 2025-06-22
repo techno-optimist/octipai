@@ -136,7 +136,7 @@ export default function AboutPage() {
               animate={{ scale: 1 }}
               transition={{ duration: 0.8, delay: 0.2 }}
             >
-              OctiPai
+              Octipai
             </motion.h1>
             <motion.p 
               className="text-2xl md:text-3xl text-purple-200 mb-8 font-light"
@@ -152,7 +152,7 @@ export default function AboutPage() {
               animate={{ opacity: 1 }}
               transition={{ duration: 0.8, delay: 0.6 }}
             >
-              Inspired by Terence McKenna's vision of octopus intelligence, OctiPai transforms ordinary digital interactions into tools for exploring the invisible dimensions of meaning, significance, and reality that surround us at every moment.
+              Inspired by Terence McKenna's vision of fluid intelligence, Octipai transforms ordinary digital interactions into tools for exploring the invisible dimensions of meaning, significance, and reality that surround us at every moment.
             </motion.p>
           </div>
         </motion.div>
@@ -252,7 +252,7 @@ export default function AboutPage() {
             <h2 className="text-4xl font-bold text-white mb-8">The Integrated Experience</h2>
             <div className="bg-white/10 backdrop-blur-sm rounded-3xl p-8 border border-white/20">
               <p className="text-lg text-purple-200 leading-relaxed mb-6">
-                OctiPai creates a unified ecosystem where each tool enhances the others. Use the Environmental Scanner to detect meaning fields in your physical space, then engage with Digital Terence to understand their significance. Analyze voice recordings for archetypal patterns, then photograph moments to perform temporal archaeology on their hidden meanings.
+                Octipai creates a unified ecosystem where each tool enhances the others. Use the Environmental Scanner to detect meaning fields in your physical space, then engage with Digital Terence to understand their significance. Analyze voice recordings for archetypal patterns, then photograph moments to perform temporal archaeology on their hidden meanings.
               </p>
               <p className="text-lg text-purple-200 leading-relaxed">
                 Throughout your exploration, the fluid interface effects create a synesthetic layer that makes every interaction feel like an intentional gesture, transforming your digital experience into a continuous practice of awareness and meaning-making.
