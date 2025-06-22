@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Menu, Home, Mic, Camera, Scan, X } from 'lucide-react'
+import { Menu, Home, Mic, Camera, Scan, MessageCircle, X } from 'lucide-react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 
@@ -12,6 +12,12 @@ const menuItems = [
     href: '/',
     icon: Home,
     description: 'Synesthetic Meaning Hub'
+  },
+  {
+    name: 'Chat',
+    href: '/chat',
+    icon: MessageCircle,
+    description: 'Digital Terence McKenna'
   },
   {
     name: 'Voice',
