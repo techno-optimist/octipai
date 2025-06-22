@@ -1,3 +1,4 @@
+// @ts-nocheck
 'use client';
 import { useEffect, useRef } from 'react';
 
@@ -26,6 +27,7 @@ function SplashCursor({
     const canvas = canvasRef.current;
     if (!canvas) return;
 
+    /* eslint-disable @typescript-eslint/no-explicit-any */
     function pointerPrototype() {
       this.id = -1;
       this.texcoordX = 0;
