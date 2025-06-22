@@ -1,0 +1,103 @@
+.focus-container {
+  position: relative;
+  display: flex;
+  gap: 0.5em;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  line-height: 1.2;
+  padding: 1rem;
+}
+
+@media (min-width: 768px) {
+  .focus-container {
+    gap: 0.8em;
+    padding: 2rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .focus-container {
+    gap: 1em;
+  }
+}
+
+.focus-word {
+  position: relative;
+  font-size: 2.5rem;
+  font-weight: 700;
+  cursor: pointer;
+  color: white;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+  transition:
+    filter 0.3s ease,
+    color 0.3s ease;
+}
+
+@media (min-width: 768px) {
+  .focus-word {
+    font-size: 3rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .focus-word {
+    font-size: 3.5rem;
+  }
+}
+
+.focus-word.active {
+  filter: blur(0);
+}
+
+.focus-word.revealed {
+  filter: blur(0);
+  opacity: 1;
+}
+
+.focus-frame {
+  position: absolute;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+  box-sizing: content-box;
+  border: none;
+}
+
+.corner {
+  position: absolute;
+  width: 1rem;
+  height: 1rem;
+  border: 2px solid var(--border-color, rgba(147, 51, 234, 0.8));
+  filter: drop-shadow(0px 0px 8px var(--glow-color, rgba(147, 51, 234, 0.6)));
+  border-radius: 2px;
+  transition: none;
+}
+
+.top-left {
+  top: -10px;
+  left: -10px;
+  border-right: none;
+  border-bottom: none;
+}
+
+.top-right {
+  top: -10px;
+  right: -10px;
+  border-left: none;
+  border-bottom: none;
+}
+
+.bottom-left {
+  bottom: -10px;
+  left: -10px;
+  border-right: none;
+  border-top: none;
+}
+
+.bottom-right {
+  bottom: -10px;
+  right: -10px;
+  border-left: none;
+  border-top: none;
+} 

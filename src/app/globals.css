@@ -1,26 +1,162 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+/* Tailwind CSS v4 setup */
+@theme {
+  --color-background: #0a0a0a;
+  --color-foreground: #f5f5f5;
+  --font-family-sans: Inter, sans-serif;
+  
+  --animate-consciousness-flow: consciousness-flow 8s ease-in-out infinite;
+  --animate-meaning-pulse: meaning-pulse 3s ease-in-out infinite;
+  --animate-synesthetic-glow: synesthetic-glow 4s ease-in-out infinite;
+  --animate-aurora: aurora 60s linear infinite;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+/* Hide default cursor for magical experience */
+* {
+  cursor: none !important;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+/* Custom synesthetic animations */
+@keyframes consciousness-flow {
+  0%, 100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+@keyframes meaning-pulse {
+  0%, 100% {
+    opacity: 0.4;
+    scale: 0.95;
+  }
+  50% {
+    opacity: 0.8;
+    scale: 1.05;
+  }
+}
+
+@keyframes synesthetic-glow {
+  0%, 100% {
+    box-shadow: 0 0 20px rgba(147, 51, 234, 0.3);
+  }
+  33% {
+    box-shadow: 0 0 30px rgba(59, 130, 246, 0.4);
+  }
+  66% {
+    box-shadow: 0 0 25px rgba(99, 102, 241, 0.35);
+  }
+}
+
+@keyframes aurora {
+  from {
+    background-position:
+      50% 50%,
+      50% 50%;
+  }
+  to {
+    background-position:
+      350% 50%,
+      350% 50%;
+  }
+}
+
+.consciousness-gradient {
+  background: linear-gradient(-45deg, #9333ea, #3b82f6, #6366f1, #8b5cf6);
+  background-size: 400% 400%;
+  animation: consciousness-flow 8s ease-in-out infinite;
+}
+
+.meaning-pulse {
+  animation: meaning-pulse 3s ease-in-out infinite;
+}
+
+.synesthetic-glow {
+  animation: synesthetic-glow 4s ease-in-out infinite;
+}
+
+.glass-morphism {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.ineffable-gradient {
+  background: linear-gradient(135deg, 
+    rgba(147, 51, 234, 0.8) 0%,
+    rgba(59, 130, 246, 0.6) 25%,
+    rgba(99, 102, 241, 0.7) 50%,
+    rgba(139, 92, 246, 0.5) 75%,
+    rgba(147, 51, 234, 0.8) 100%
+  );
+}
+
+/* Aurora Background Effect */
+.aurora-background {
+  --aurora: repeating-linear-gradient(100deg, #3b82f6 10%, #a5b4fc 15%, #93c5fd 20%, #ddd6fe 25%, #60a5fa 30%);
+  --dark-gradient: repeating-linear-gradient(100deg, #000 0%, #000 7%, transparent 10%, transparent 12%, #000 16%);
+  --white-gradient: repeating-linear-gradient(100deg, #fff 0%, #fff 7%, transparent 10%, transparent 12%, #fff 16%);
+}
+
+.aurora-inner {
+  background-image: var(--dark-gradient), var(--aurora);
+  background-size: 300%, 200%;
+  background-position: 50% 50%, 50% 50%;
+  filter: blur(10px) invert(0);
+  opacity: 0.5;
+  will-change: transform;
+}
+
+.aurora-inner::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: var(--dark-gradient), var(--aurora);
+  background-size: 200%, 100%;
+  background-attachment: fixed;
+  mix-blend-mode: difference;
+  animation: aurora 60s linear infinite;
+}
+
+/* Magical cursor enhancements */
+.magical-clickable {
+  position: relative;
+  overflow: hidden;
+}
+
+.magical-clickable::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(45deg, transparent, rgba(147, 51, 234, 0.1), transparent);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+}
+
+.magical-clickable:hover::before {
+  opacity: 1;
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.1);
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(45deg, #9333ea, #3b82f6);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(45deg, #7c3aed, #2563eb);
 }
