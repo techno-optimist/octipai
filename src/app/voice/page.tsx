@@ -1,11 +1,32 @@
 'use client'
 
-import { useState, useRef } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Mic, Square, Loader, Info, Volume2 } from 'lucide-react'
+import { Mic, Square, Loader, Info, Volume2, MessageCircle, User } from 'lucide-react'
 import { AuroraBackground } from '@/components/AuroraBackground'
 import MeaningIridescence from '@/components/MeaningIridescence'
 import Navigation from '@/components/Navigation'
+
+interface ChatMessage {
+  id: string
+  text: string
+  isUser: boolean
+  timestamp: number
+}
+
+// Dynamic Terence McKenna opening messages
+const TERENCE_OPENINGS = [
+  "I submit to you that the real secret of magic is that the world is made of words... Speak yours, and let us explore what ineffable territories they might reveal.",
+  "Language is the most recent and the most experimental of human technologies. Share your thoughts with me, and we'll discover what consciousness patterns emerge from the void.",
+  "The fact of the matter is that reality is stranger than we can suppose. Tell me what's on your mind, and together we'll excavate the meaning beneath.",
+  "Nature loves courage, my friend. Speak what arises in your awareness, and let's see what novel territories of understanding we might venture into.",
+  "The universe is not only queerer than we suppose, but queerer than we can suppose. Share your thoughts, and we'll push the boundaries of linguistic possibility.",
+  "I always think of language as a kind of technology for the downloading of experience. What experience shall we download together today?",
+  "The curious business of being human involves navigating between the known and the unknowable. Speak, and let's chart some unexplored waters of meaning.",
+  "Culture is not your friend - but conversation certainly is. Tell me what's stirring in your consciousness, and we'll see what emerges.",
+  "The syntactical nature of reality suggests that speaking creates worlds. What world shall we create through your words today?",
+  "Consciousness is the great mystery, and language is our primary tool for approaching it. Share your thoughts, and let's see what we might discover together."
+]
 
 export default function VoiceMeaningPage() {
   const [isRecording, setIsRecording] = useState(false)
@@ -15,9 +36,93 @@ export default function VoiceMeaningPage() {
   const [meaningData, setMeaningData] = useState<any>(null)
   const [error, setError] = useState('')
   
+  // Chat functionality
+  const [chatMessages, setChatMessages] = useState<ChatMessage[]>([])
+  const [isTerrenceTyping, setIsTerrenceTyping] = useState(false)
+  const [showChat, setShowChat] = useState(false)
+  
+  // Dynamic opening message
+  const [currentOpening, setCurrentOpening] = useState('')
+  
   const mediaRecorderRef = useRef<MediaRecorder | null>(null)
   const audioChunksRef = useRef<Blob[]>([])
   const recognitionRef = useRef<any>(null)
+  const chatEndRef = useRef<HTMLDivElement>(null)
+  const lastSentTextRef = useRef<string>('')
+
+  // Initialize with random Terence opening message
+  useEffect(() => {
+    const randomOpening = TERENCE_OPENINGS[Math.floor(Math.random() * TERENCE_OPENINGS.length)]
+    setCurrentOpening(randomOpening)
+    
+    // Rotate the message every 15 seconds when not recording
+    const interval = setInterval(() => {
+      if (!isRecording) {
+        const newOpening = TERENCE_OPENINGS[Math.floor(Math.random() * TERENCE_OPENINGS.length)]
+        setCurrentOpening(newOpening)
+      }
+    }, 15000) // 15 seconds
+    
+    return () => clearInterval(interval)
+  }, [isRecording])
+
+  // Auto-scroll chat to bottom
+  const scrollToBottom = () => {
+    chatEndRef.current?.scrollIntoView({ behavior: 'smooth' })
+  }
+
+  useEffect(() => {
+    scrollToBottom()
+  }, [chatMessages])
+
+  // Send message to Terence McKenna
+  const sendToTerence = async (message: string) => {
+    if (!message.trim() || message === lastSentTextRef.current) return
+    
+    lastSentTextRef.current = message
+    
+    // Add user message to chat
+    const userMessage: ChatMessage = {
+      id: Date.now().toString(),
+      text: message,
+      isUser: true,
+      timestamp: Date.now()
+    }
+    
+    setChatMessages(prev => [...prev, userMessage])
+    setIsTerrenceTyping(true)
+    setShowChat(true)
+    
+    try {
+      const response = await fetch('/api/chat-terence', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ message })
+      })
+
+      if (response.ok) {
+        const data = await response.json()
+        
+        // Add Terence's response to chat
+        const terrenceMessage: ChatMessage = {
+          id: (Date.now() + 1).toString(),
+          text: data.response,
+          isUser: false,
+          timestamp: Date.now()
+        }
+        
+        setChatMessages(prev => [...prev, terrenceMessage])
+      } else {
+        console.error('Failed to get Terence response')
+      }
+    } catch (error) {
+      console.error('Error sending message to Terence:', error)
+    } finally {
+      setIsTerrenceTyping(false)
+    }
+  }
 
   const startRecording = async () => {
     try {
@@ -59,6 +164,11 @@ export default function VoiceMeaningPage() {
             if (finalTranscript.trim()) {
               console.log('Sending to AI for interpretation:', finalTranscript)
               await interpretSpeech(finalTranscript)
+              
+              // Send to Terence for commentary (with some filtering to avoid spam)
+              if (finalTranscript.trim().length > 10) {
+                await sendToTerence(finalTranscript.trim())
+              }
             }
           }
         }
@@ -168,9 +278,15 @@ export default function VoiceMeaningPage() {
     setError('')
     setIsRecording(false)
     setIsProcessing(false)
+    setChatMessages([])
+    setShowChat(false)
+    lastSentTextRef.current = ''
     if (recognitionRef.current) {
       recognitionRef.current.stop()
     }
+    // Get a new opening message when clearing
+    const newOpening = TERENCE_OPENINGS[Math.floor(Math.random() * TERENCE_OPENINGS.length)]
+    setCurrentOpening(newOpening)
   }
 
   return (
@@ -187,7 +303,7 @@ export default function VoiceMeaningPage() {
         <Navigation />
         
         <div className="flex-1 flex items-center justify-center">
-          <div className="flex flex-col items-center justify-center space-y-6">
+          <div className="flex flex-col items-center justify-center space-y-6 w-full max-w-4xl">
             
             {/* Recording Interface - Perfectly Centered */}
             {!transcript && (
@@ -237,24 +353,107 @@ export default function VoiceMeaningPage() {
                 </div>
 
                 <div className="text-center space-y-2">
-                  <p className="text-white/90 text-lg">
-                    {isRecording ? 'Recording... Click to stop' : 'Speak your thoughts and watch them transform into flowing consciousness'}
-                  </p>
+                  {/* Dynamic Terence Opening Messages */}
+                  <AnimatePresence mode="wait">
+                    <motion.p 
+                      key={currentOpening}
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -10 }}
+                      transition={{ duration: 0.5 }}
+                      className="text-white/90 text-lg max-w-3xl leading-relaxed italic px-4"
+                    >
+                      {isRecording ? 'Excellent... I can hear your thoughts taking shape. Please, continue...' : currentOpening}
+                    </motion.p>
+                  </AnimatePresence>
                   
-                  {/* Real-time AI Interpretation Text */}
-                  {isRecording && aiInterpretation && (
+                  {/* Real-time transcript preview */}
+                  {isRecording && transcript && (
                     <motion.div 
                       className="max-w-2xl mx-4 mt-4"
                       initial={{ opacity: 0, y: 10 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ duration: 0.3 }}
                     >
-                      <p className="text-purple-300/90 text-lg leading-relaxed italic">
-                        "{aiInterpretation}"
+                      <p className="text-white/70 text-base leading-relaxed">
+                        "{transcript}"
                       </p>
                     </motion.div>
                   )}
                 </div>
+                
+                {/* Dynamic Terence Chat Bubble */}
+                <AnimatePresence>
+                  {showChat && chatMessages.length > 0 && (
+                    <motion.div
+                      initial={{ opacity: 0, y: 20, scale: 0.9 }}
+                      animate={{ opacity: 1, y: 0, scale: 1 }}
+                      exit={{ opacity: 0, y: -20, scale: 0.9 }}
+                      className="w-full max-w-2xl max-h-80 overflow-y-auto bg-black/40 backdrop-blur-sm border border-white/20 rounded-2xl p-4 space-y-3"
+                    >
+                      <div className="flex items-center gap-2 mb-3 pb-2 border-b border-white/10">
+                        <MessageCircle className="w-5 h-5 text-purple-400" />
+                        <h3 className="text-white font-medium">Digital Terence Commentary</h3>
+                      </div>
+                      
+                      <div className="space-y-3">
+                        {chatMessages.map((message) => (
+                          <motion.div
+                            key={message.id}
+                            initial={{ opacity: 0, x: message.isUser ? 20 : -20 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            className={`flex gap-3 ${message.isUser ? 'justify-end' : 'justify-start'}`}
+                          >
+                            {/* Avatar */}
+                            {!message.isUser && (
+                              <div className="w-8 h-8 rounded-full bg-purple-600/30 flex items-center justify-center flex-shrink-0">
+                                <span className="text-xs text-purple-300 font-bold">T</span>
+                              </div>
+                            )}
+                            
+                            {/* Message bubble */}
+                            <div className={`max-w-[80%] rounded-xl p-3 ${
+                              message.isUser 
+                                ? 'bg-blue-600/30 text-blue-100' 
+                                : 'bg-purple-600/20 text-purple-100 border border-purple-400/30'
+                            }`}>
+                              <p className="text-sm leading-relaxed">{message.text}</p>
+                            </div>
+                            
+                            {/* User avatar */}
+                            {message.isUser && (
+                              <div className="w-8 h-8 rounded-full bg-blue-600/30 flex items-center justify-center flex-shrink-0">
+                                <User className="w-4 h-4 text-blue-300" />
+                              </div>
+                            )}
+                          </motion.div>
+                        ))}
+                        
+                        {/* Typing indicator */}
+                        {isTerrenceTyping && (
+                          <motion.div
+                            initial={{ opacity: 0, x: -20 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            className="flex gap-3 justify-start"
+                          >
+                            <div className="w-8 h-8 rounded-full bg-purple-600/30 flex items-center justify-center flex-shrink-0">
+                              <span className="text-xs text-purple-300 font-bold">T</span>
+                            </div>
+                            <div className="bg-purple-600/20 rounded-xl p-3 border border-purple-400/30">
+                              <div className="flex items-center gap-1">
+                                <div className="w-2 h-2 bg-purple-400 rounded-full animate-bounce" style={{ animationDelay: '0s' }}></div>
+                                <div className="w-2 h-2 bg-purple-400 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
+                                <div className="w-2 h-2 bg-purple-400 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
+                              </div>
+                            </div>
+                          </motion.div>
+                        )}
+                        
+                        <div ref={chatEndRef} />
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
               </div>
             )}
 
@@ -442,16 +641,16 @@ export default function VoiceMeaningPage() {
                         </div>
                         
                         <div>
-                          <h4 className="text-pink-300 font-medium mb-2">✨ Synesthetic Translation</h4>
+                          <h4 className="text-pink-300 font-medium mb-2">✨ Digital Terence Commentary</h4>
                           <p className="text-sm leading-relaxed">
-                            This is McKenna's octopus communication in action - your words bypass linguistic reduction and become 
-                            direct visual meaning, preserving the full spectrum of consciousness that language often loses.
+                            As you speak, the digital incarnation of Terence McKenna provides real-time philosophical insights and 
+                            consciousness-expanding commentary on your thoughts, creating a dynamic conversation with the legendary psychonaut.
                           </p>
                         </div>
                         
                         <div className="pt-2 border-t border-white/10">
                           <p className="text-xs text-white/60 italic">
-                            "Language is a tool for concealing thought as much as revealing it." - The visual bypasses this limitation.
+                            "The syntactical nature of reality, the real secret of magic, is that the world is made of words." - Terence McKenna
                           </p>
                         </div>
                       </div>
