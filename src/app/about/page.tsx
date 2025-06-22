@@ -8,11 +8,11 @@ const features = [
   {
     icon: Scan,
     title: "Environmental Camera Scanner",
-    description: "Point your camera at any physical space to reveal invisible meaning fields, consciousness patterns, and accumulated energetic signatures. Our AI analyzes spatial relationships, lighting, objects, and environmental dynamics to detect the hidden layers of meaning that normal perception misses.",
+    description: "Point your camera at any physical space to reveal invisible meaning fields, archetypal patterns, and accumulated energetic signatures. Our AI analyzes spatial relationships, lighting, objects, and environmental dynamics to detect the hidden layers of significance that normal perception misses.",
     details: [
       "Real-time camera feed analysis",
       "Live overlay of meaning fields",
-      "Consciousness level detection",
+      "Significance level detection",
       "Social dynamics visualization",
       "Temporal echo recognition"
     ],
@@ -21,12 +21,12 @@ const features = [
   {
     icon: Mic,
     title: "Voice Meaning Analysis", 
-    description: "Transform spoken words into visual consciousness patterns. Our real-time voice interpretation reveals the hidden meaning structures, archetypal energies, and transformative potential flowing through your speech, creating a bridge between vocal expression and consciousness exploration.",
+    description: "Transform spoken words into visual meaning patterns. Our real-time voice interpretation reveals the hidden structures, archetypal energies, and transformative potential flowing through your speech, creating a bridge between vocal expression and deeper understanding.",
     details: [
       "Real-time voice transcription",
-      "Consciousness state analysis",
+      "Meaning state analysis",
       "Archetypal pattern recognition",
-      "Meaning flow visualization",
+      "Significance flow visualization",
       "Integration guidance"
     ],
     gradient: "from-blue-500 to-indigo-600"
@@ -34,9 +34,9 @@ const features = [
   {
     icon: Camera,
     title: "Temporal Meaning Camera",
-    description: "Upload any image to perform consciousness archaeology. Our AI excavates the temporal layers, hidden meanings, and ineffable qualities embedded within visual content, revealing the consciousness patterns that accumulated in the moment the image was captured.",
+    description: "Upload any image to perform meaning archaeology. Our AI excavates the temporal layers, hidden meanings, and ineffable qualities embedded within visual content, revealing the significance patterns that accumulated in the moment the image was captured.",
     details: [
-      "Deep image consciousness analysis",
+      "Deep image meaning analysis",
       "Temporal layer extraction",
       "Ineffable quality detection",
       "Archetypal symbol recognition",
@@ -47,10 +47,10 @@ const features = [
   {
     icon: MessageCircle,
     title: "Digital Terence McKenna",
-    description: "Engage in profound dialogue with an AI embodiment of Terence McKenna's consciousness. Drawing from his extensive knowledge of psychedelics, shamanism, consciousness studies, and reality exploration, this digital guide offers wisdom for your consciousness journey.",
+    description: "Engage in profound dialogue with an AI embodiment of Terence McKenna's insights. Drawing from his extensive knowledge of psychedelics, shamanism, complexity theory, and reality exploration, this digital guide offers wisdom for your journey into the mystery.",
     details: [
       "Authentic McKenna knowledge base",
-      "Consciousness-focused dialogue",
+      "Philosophy-focused dialogue",
       "Psychedelic integration guidance",
       "Reality exploration insights",
       "Wisdom for inner journeys"
@@ -59,12 +59,12 @@ const features = [
   },
   {
     icon: Sparkles,
-    title: "Fluid Consciousness Effects",
-    description: "Your cursor becomes a tool for consciousness visualization. Beautiful purple fluid trails follow your movements while a precise white circle tracks your attention, creating a synesthetic interface where your digital interactions become expressions of awareness and intention.",
+    title: "Fluid Interface Effects",
+    description: "Your cursor becomes a tool for meaning visualization. Beautiful purple fluid trails follow your movements while a precise white circle tracks your attention, creating a synesthetic interface where your digital interactions become expressions of awareness and intention.",
     details: [
       "WebGL fluid simulation",
       "Real-time particle effects",
-      "Consciousness-responsive trails",
+      "Meaning-responsive trails",
       "Attention tracking cursor",
       "Synesthetic interactions"
     ],
@@ -75,17 +75,17 @@ const features = [
 const philosophyPoints = [
   {
     icon: Brain,
-    title: "Consciousness Archaeology",
-    description: "Every moment, space, and expression contains accumulated layers of meaning and consciousness. Our tools help excavate these hidden dimensions."
+    title: "Meaning Archaeology",
+    description: "Every moment, space, and expression contains accumulated layers of significance and hidden meaning. Our tools help excavate these invisible dimensions."
   },
   {
     icon: Eye,
     title: "Expanded Perception",
-    description: "Technology can serve as a telescope for consciousness, revealing patterns and meanings invisible to ordinary perception."
+    description: "Technology can serve as a telescope for awareness, revealing patterns and meanings invisible to ordinary perception."
   },
   {
     icon: Waves,
-    title: "Synesthetic Integration",
+    title: "Synesthetic Translation",
     description: "By translating between different modes of perception - visual, auditory, spatial - we create new pathways for understanding reality."
   }
 ]
@@ -144,7 +144,7 @@ export default function AboutPage() {
               animate={{ opacity: 1 }}
               transition={{ duration: 0.8, delay: 0.4 }}
             >
-              Consciousness Exploration Interface
+              Meaning Translation Interface
             </motion.p>
             <motion.p 
               className="text-lg text-purple-300 max-w-3xl mx-auto leading-relaxed"
@@ -152,7 +152,7 @@ export default function AboutPage() {
               animate={{ opacity: 1 }}
               transition={{ duration: 0.8, delay: 0.6 }}
             >
-              Inspired by Terence McKenna's vision of octopus consciousness, OctiPai transforms ordinary digital interactions into tools for exploring the invisible dimensions of meaning, awareness, and reality that surround us at every moment.
+              Inspired by Terence McKenna's vision of octopus intelligence, OctiPai transforms ordinary digital interactions into tools for exploring the invisible dimensions of meaning, significance, and reality that surround us at every moment.
             </motion.p>
           </div>
         </motion.div>
@@ -195,7 +195,7 @@ export default function AboutPage() {
               transition={{ duration: 0.8, delay: 1.4 }}
               className="text-4xl font-bold text-white text-center mb-16"
             >
-              Consciousness Exploration Tools
+              Meaning Translation Tools
             </motion.h2>
             
             <div className="space-y-20">
@@ -252,10 +252,10 @@ export default function AboutPage() {
             <h2 className="text-4xl font-bold text-white mb-8">The Integrated Experience</h2>
             <div className="bg-white/10 backdrop-blur-sm rounded-3xl p-8 border border-white/20">
               <p className="text-lg text-purple-200 leading-relaxed mb-6">
-                OctiPai creates a unified ecosystem where each tool enhances the others. Use the Environmental Scanner to detect meaning fields in your physical space, then engage with Digital Terence to understand their significance. Analyze voice recordings for consciousness patterns, then photograph moments to perform temporal archaeology on their hidden meanings.
+                OctiPai creates a unified ecosystem where each tool enhances the others. Use the Environmental Scanner to detect meaning fields in your physical space, then engage with Digital Terence to understand their significance. Analyze voice recordings for archetypal patterns, then photograph moments to perform temporal archaeology on their hidden meanings.
               </p>
               <p className="text-lg text-purple-200 leading-relaxed">
-                Throughout your exploration, the fluid cursor effects create a synesthetic layer that makes every interaction feel like a conscious gesture, transforming your digital experience into a continuous practice of awareness and meaning-making.
+                Throughout your exploration, the fluid interface effects create a synesthetic layer that makes every interaction feel like an intentional gesture, transforming your digital experience into a continuous practice of awareness and meaning-making.
               </p>
             </div>
           </div>
@@ -271,7 +271,7 @@ export default function AboutPage() {
           <div className="max-w-4xl mx-auto">
             <h2 className="text-3xl font-bold text-white mb-6">Begin Your Exploration</h2>
             <p className="text-lg text-purple-200 mb-8">
-              Ready to explore the invisible dimensions of consciousness and meaning that surround you? Each tool offers a different lens for perception - start with whatever calls to your curiosity.
+              Ready to explore the invisible dimensions of meaning and significance that surround you? Each tool offers a different lens for perception - start with whatever calls to your curiosity.
             </p>
             <div className="flex flex-wrap justify-center gap-4">
               {[
