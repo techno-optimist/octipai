@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Menu, Home, Mic, Camera, Scan, MessageCircle, X } from 'lucide-react'
+import { Menu, Home, Mic, Camera, Scan, MessageCircle, Info, X } from 'lucide-react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 
@@ -36,6 +36,12 @@ const menuItems = [
     href: '/environment',
     icon: Scan,
     description: 'Spatial Consciousness Scanner'
+  },
+  {
+    name: 'About',
+    href: '/about',
+    icon: Info,
+    description: 'How OctiPai Works'
   }
 ]
 
